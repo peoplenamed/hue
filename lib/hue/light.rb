@@ -173,5 +173,41 @@ module Hue
     def base_url
       "http://#{@bridge.ip}/api/#{@client.username}/lights/#{id}"
     end
+
+    def ranged_hue
+      convert_range(0, 65535, this.hue, 0, 360)
+    end
+
+    def ranged_saturation
+      convert_range(0, 255, this.saturation, 0, 100)
+    end
+
+    def ranged_brightness
+      convert_range(0, 255, this.brightness, 0, 100)
+    end
+
+    def rgb_color
+      hsv_to_rgb(ranged_hue, ranged_saturation, ranged_brightness)
+    end    
+
+    def convert_range(old_min, old_max, old_value, new_min, new_max)
+      ( (old_value.to_f - old_min.to_f) / (old_max.to_f - old_min.to_f) ) * (new_max.to_f - new_min.to_f) + new_min.to_f
+    end
+
+    def hsv_to_rgb(h, s, v)
+      h, s, v = h.to_f/360, s.to_f/100, v.to_f/100
+      h_i = (h*6).to_i
+      f = h*6 - h_i
+      p = v * (1 - s)
+      q = v * (1 - f*s)
+      t = v * (1 - (1 - f) * s)
+      r, g, b = v, t, p if h_i==0
+      r, g, b = q, v, p if h_i==1
+      r, g, b = p, v, t if h_i==2
+      r, g, b = p, q, v if h_i==3
+      r, g, b = t, p, v if h_i==4
+      r, g, b = v, p, q if h_i==5
+      [(r*255).to_i, (g*255).to_i, (b*255).to_i]
+    end
   end
 end
