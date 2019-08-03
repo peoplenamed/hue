@@ -83,7 +83,7 @@ module Hue
 
     # Reserved for future functionality.
     attr_reader :point_symbol
-    
+
     attr_reader :rgb
 
     def initialize(client, bridge, id, hash)
@@ -182,15 +182,15 @@ module Hue
     end
 
     def ranged_hue
-      convert_range(0, 65535, this.hue, 0, 360)
+      convert_range(0, 65535, self.hue, 0, 360)
     end
 
     def ranged_saturation
-      convert_range(0, 255, this.saturation, 0, 100)
+      convert_range(0, 255, self.saturation, 0, 100)
     end
 
     def ranged_brightness
-      convert_range(0, 255, this.brightness, 0, 100)
+      convert_range(0, 255, self.brightness, 0, 100)
     end
 
     def convert_range(old_min, old_max, old_value, new_min, new_max)
