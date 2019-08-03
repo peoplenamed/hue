@@ -83,6 +83,8 @@ module Hue
 
     # Reserved for future functionality.
     attr_reader :point_symbol
+    
+    attr_reader :rgb
 
     def initialize(client, bridge, id, hash)
       @client = client
@@ -140,6 +142,10 @@ module Hue
       unpack(json)
     end
 
+    def rgb_color
+      hsv_to_rgb(ranged_hue, ranged_saturation, ranged_brightness)
+    end
+
   private
 
     KEYS_MAP = {
@@ -162,6 +168,7 @@ module Hue
       :effect => :effect,
       :color_mode => :colormode,
       :reachable => :reachable,
+      :rgb => :rgb_color
     }
 
     def unpack(hash)
@@ -185,10 +192,6 @@ module Hue
     def ranged_brightness
       convert_range(0, 255, this.brightness, 0, 100)
     end
-
-    def rgb_color
-      hsv_to_rgb(ranged_hue, ranged_saturation, ranged_brightness)
-    end    
 
     def convert_range(old_min, old_max, old_value, new_min, new_max)
       ( (old_value.to_f - old_min.to_f) / (old_max.to_f - old_min.to_f) ) * (new_max.to_f - new_min.to_f) + new_min.to_f
